@@ -1,0 +1,8 @@
+
+services:
+  - type: web
+    name: ssemble-backend
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python main.py"
+    rootDir: backend
