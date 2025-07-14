@@ -1,1 +1,110 @@
-<html><body><h1>Ssemble Copy</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ssemble Copy</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    .container {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+      max-width: 500px;
+      width: 100%;
+    }
+    input[type="file"],
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      background-color: #2a2a2a;
+      border: 1px solid #333;
+      color: #fff;
+      border-radius: 8px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #00bfa5;
+      color: #fff;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #00a38c;
+    }
+    .status {
+      margin-top: 15px;
+      font-size: 0.95rem;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Ssemble Copy</h1>
+  <div class="container">
+    <form id="uploadForm">
+      <input type="file" id="videoFile" accept="video/*" />
+      <input type="text" id="youtubeLink" placeholder="Or paste a YouTube link" />
+      <button type="submit">Process</button>
+    </form>
+    <div class="status" id="statusMessage"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('uploadForm');
+    const status = document.getElementById('statusMessage');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = "Uploading...";
+
+      const fileInput = document.getElementById('videoFile');
+      const youtubeInput = document.getElementById('youtubeLink');
+
+      const formData = new FormData();
+      if (fileInput.files.length > 0) {
+        formData.append('video', fileInput.files[0]);
+      }
+      if (youtubeInput.value.trim() !== '') {
+        formData.append('youtube_url', youtubeInput.value.trim());
+      }
+
+      try {
+        const response = await fetch('/process', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error("Server error");
+        }
+
+        const result = await response.json();
+        status.textContent = `✅ Done: ${result.message || "Video processed successfully!"}`;
+      } catch (error) {
+        console.error(error);
+        status.textContent = "❌ Failed to process video.";
+      }
+    });
+  </script>
+</body>
+</html>
