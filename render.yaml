@@ -1,8 +1,7 @@
-
 services:
   - type: web
-    name: ssemble-backend
+    name: ssemble-copy-1
     env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "python main.py"
-    rootDir: backend
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "uvicorn backend.main:app --host 0.0.0.0 --port 10000"
+    runtime: python
